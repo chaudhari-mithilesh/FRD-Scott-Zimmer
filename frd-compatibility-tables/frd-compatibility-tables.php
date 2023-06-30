@@ -107,8 +107,8 @@ function addImportSubmenu()
 
 function wdmImportPage()
 {
-    $display_none='';
-    ?>
+    $display_none = '';
+?>
     <div class="se-pre-con">
         <div>
             <div class="rect1"></div>
@@ -119,37 +119,40 @@ function wdmImportPage()
         </div>
     </div>
     <div id="tabs">
-      <ul>
-        <li><a href="#tabs-1">Import FRD Data</a></li>
-        <li><a href="#tabs-2">View FRD Data</a></li>
-      </ul>
-      <div id="tabs-1">
-        <?php
-        if (isset($_POST['wdm_submit'])) {
-            $upload_dir = wp_upload_dir();
-            $upload_dir = $upload_dir['basedir'] . '/wdm_temp';
-            if (! is_dir($upload_dir)) {
-                mkdir($upload_dir);
-            }
-            move_uploaded_file($_FILES["wdm_import"]["tmp_name"], $upload_dir.'/'.$_FILES["wdm_import"]['name']);
-            ini_set("auto_detect_line_endings", true);
-            $wdm_fp=file($upload_dir.'/'.$_FILES["wdm_import"]['name']);
-            ?>
-            <div class="wdm_loader" data-file_name="<?php echo $_FILES['wdm_import']['name'];
-            ?>" data-count="<?php echo count($wdm_fp);
-            ?>"></div>
-            <div class="loding_img" style="display: none;"></div>
-            <div class="loader" style="display: none;">
-                    <div class="progress-bar"><div class="progress-stripes"></div><div class="percentage">0%</div></div>
-            </div>
-
-            <span>Importing...</span>
+        <ul>
+            <li><a href="#tabs-1">Import FRD Data</a></li>
+            <li><a href="#tabs-2">View FRD Data</a></li>
+        </ul>
+        <div id="tabs-1">
             <?php
-            $display_none='style="display:none"';
-        }
-    ?>
+            if (isset($_POST['wdm_submit'])) {
+                $upload_dir = wp_upload_dir();
+                $upload_dir = $upload_dir['basedir'] . '/wdm_temp';
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir);
+                }
+                move_uploaded_file($_FILES["wdm_import"]["tmp_name"], $upload_dir . '/' . $_FILES["wdm_import"]['name']);
+                ini_set("auto_detect_line_endings", true);
+                $wdm_fp = file($upload_dir . '/' . $_FILES["wdm_import"]['name']);
+            ?>
+                <div class="wdm_loader" data-file_name="<?php echo $_FILES['wdm_import']['name'];
+                                                        ?>" data-count="<?php echo count($wdm_fp);
+                                                                        ?>"></div>
+                <div class="loding_img" style="display: none;"></div>
+                <div class="loader" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-stripes"></div>
+                        <div class="percentage">0%</div>
+                    </div>
+                </div>
+
+                <span>Importing...</span>
+            <?php
+                $display_none = 'style="display:none"';
+            }
+            ?>
             <form method="post" enctype="multipart/form-data" <?php echo $display_none;
-    ?> >
+                                                                ?>>
                 <div>
                     <div class="wrap">
                         <h1>Import FRD Data</h1>
@@ -160,35 +163,35 @@ function wdmImportPage()
                     <input type="button" class="wdm_reset" value="Delete All Data">
                 </div>
             </form>
-      </div>
-      <div id="tabs-2">
-        <?php
-        if (!isset($_POST['wdm_submit'])) {
-            ?>
-        <div id="display_page_popup">
         </div>
-        <table id="comp_table">
-            <thead>
-              <th>Carrier Manufacturer</th>
-              <th>Carrier Type</th>
-              <th>Carrier Model</th>
-              <th>FRD Product</th>
-              <th>FRD Type</th>
-              <th>Breaker Performance</th>
-              <th>Auto Coupler</th>
-              <th>Install Kit</th>
-              <th>Discontinued</th>
-            </thead>
-            <tbody>
-                <?php
-                displayTable();
+        <div id="tabs-2">
+            <?php
+            if (!isset($_POST['wdm_submit'])) {
             ?>
-            </tbody>
-        </table>
-        <?php
-        }
-    ?>
-      </div>
+                <div id="display_page_popup">
+                </div>
+                <table id="comp_table">
+                    <thead>
+                        <th>Carrier Manufacturer</th>
+                        <th>Carrier Type</th>
+                        <th>Carrier Model</th>
+                        <th>FRD Product</th>
+                        <th>FRD Type</th>
+                        <th>Breaker Performance</th>
+                        <th>Auto Coupler</th>
+                        <th>Install Kit</th>
+                        <th>Discontinued</th>
+                    </thead>
+                    <tbody>
+                        <?php
+                        displayTable();
+                        ?>
+                    </tbody>
+                </table>
+            <?php
+            }
+            ?>
+        </div>
     </div>
     <?php
 }
@@ -196,25 +199,25 @@ function wdmImportPage()
 function displayTable()
 {
     global $wpdb;
-    $rows=$wpdb->get_results('SELECT car.manufacturer as manufacturer, car.cname AS crrier_type, car.pname AS c_model,
+    $rows = $wpdb->get_results('SELECT car.manufacturer as manufacturer, car.cname AS crrier_type, car.pname AS c_model,
                              frd.pname As frd_product, frd.cname As frd_type,
                              comp.breaker_performance, comp.auto_coupler, comp.install_kit, comp.discontinued
-                             FROM '.$wpdb->prefix.'wdm_compatibility As comp
+                             FROM ' . $wpdb->prefix . 'wdm_compatibility As comp
                              JOIN carrier_model AS car ON comp.model_id=car.id
                              LEFT JOIN frd_product As frd ON comp.frd_id=frd.id
                              ');
     //var_dump($rows);
     foreach ($rows as $value) {
         echo '<tr>';
-        echo '<td>'.$value->manufacturer;
-        echo "</td><td>".$value->crrier_type;
-        echo "</td><td>".$value->c_model;
-        echo "</td><td>".$value->frd_product;
-        echo "</td><td>".$value->frd_type;
-        echo "</td><td>".$value->breaker_performance;
-        echo "</td><td>".$value->auto_coupler;
-        echo "</td><td>".$value->install_kit;
-        echo "</td><td>".$value->discontinued;
+        echo '<td>' . $value->manufacturer;
+        echo "</td><td>" . $value->crrier_type;
+        echo "</td><td>" . $value->c_model;
+        echo "</td><td>" . $value->frd_product;
+        echo "</td><td>" . $value->frd_type;
+        echo "</td><td>" . $value->breaker_performance;
+        echo "</td><td>" . $value->auto_coupler;
+        echo "</td><td>" . $value->install_kit;
+        echo "</td><td>" . $value->discontinued;
         echo "</td></tr>";
     }
 }
@@ -226,57 +229,61 @@ function wdmImportData()
     global $wpdb;
     $upload_dir = wp_upload_dir();
     ini_set("auto_detect_line_endings", true);
-    $file=fopen($upload_dir['basedir'].'/wdm_temp/'.$_POST['file'], 'r');
+    $file = fopen($upload_dir['basedir'] . '/wdm_temp/' . $_POST['file'], 'r');
     // fseek($file, $_POST['start']);
-    $wdm_j=0;
-    while ($wdm_j<$_POST['start']) {
-        $row=fgetcsv($file);
+    $wdm_j = 0;
+    while ($wdm_j < $_POST['start']) {
+        $row = fgetcsv($file);
         $wdm_j++;
     }
-    $wdm_i=0;
-    while (!feof($file) && $wdm_i<1000) {
+    $wdm_i = 0;
+    while (!feof($file) && $wdm_i < 1000) {
         $wdm_i++;
-        $row=fgetcsv($file);
+        $row = fgetcsv($file);
         // if (isset($row[0]) && isset($row[1]) && isset($row[2]) && isset($row[3]) && isset($row[4])) {
         if (!empty($row[0]) && !empty($row[1]) && !empty($row[2])) {
-            $manufacturer=wdmGetCategoryID($row[0], "manufacturer");
-            $c_type=wdmGetCategoryID($row[1], "carrier");
-            $frd_type=wdmGetCategoryID($row[4], "frd");
+            $manufacturer = wdmGetCategoryID($row[0], "manufacturer");
+            $c_type = wdmGetCategoryID($row[1], "carrier");
+            $frd_type = wdmGetCategoryID($row[4], "frd");
             $order = isset($row[9]) ? $row[9] : 0;
-            $c_model=wdmGetPostID($row[2], 0, 'c_model', $c_type, $manufacturer);
-            $frd_product=wdmGetPostID($row[3], $order, 'frd_product', $frd_type);
-            if ($frd_product!=0) {
-                $exists=$wpdb->get_var('SELECT id FROM '.$wpdb->prefix.'wdm_compatibility WHERE model_id='.$c_model.' AND frd_id='.$frd_product);
+            $c_model = wdmGetPostID($row[2], 0, 'c_model', $c_type, $manufacturer);
+            $frd_product = wdmGetPostID($row[3], $order, 'frd_product', $frd_type);
+            if ($frd_product != 0) {
+                $exists = $wpdb->get_var('SELECT id FROM ' . $wpdb->prefix . 'wdm_compatibility WHERE model_id=' . $c_model . ' AND frd_id=' . $frd_product);
             } elseif (!empty($row[6])) {
-                $exists=$wpdb->get_var('SELECT id FROM '.$wpdb->prefix.'wdm_compatibility WHERE model_id='.$c_model.' AND frd_id='.$frd_product.' AND auto_coupler <> ""');
+                $exists = $wpdb->get_var('SELECT id FROM ' . $wpdb->prefix . 'wdm_compatibility WHERE model_id=' . $c_model . ' AND frd_id=' . $frd_product . ' AND auto_coupler <> ""');
             } elseif (!empty($row[7])) {
-                $exists=$wpdb->get_var('SELECT id FROM '.$wpdb->prefix.'wdm_compatibility WHERE model_id='.$c_model.' AND frd_id='.$frd_product.' AND install_kit <> ""');
+                $exists = $wpdb->get_var('SELECT id FROM ' . $wpdb->prefix . 'wdm_compatibility WHERE model_id=' . $c_model . ' AND frd_id=' . $frd_product . ' AND install_kit <> ""');
             }
             if (!$exists) {
-                $wpdb->insert($wpdb->prefix.'wdm_compatibility', array(
-                'model_id' => $c_model,
-                'frd_id' => $frd_product,
-                'breaker_performance' => isset($row[5]) ? $row[5] : 0,
-                'auto_coupler' => isset($row[6]) ? $row[6] : '',
-                'install_kit' => isset($row[7]) ? $row[7] : 0,
-                'discontinued' => isset($row[8]) ? strtolower($row[8]) : ''
+                $wpdb->insert($wpdb->prefix . 'wdm_compatibility', array(
+                    'model_id' => $c_model,
+                    'frd_id' => $frd_product,
+                    'breaker_performance' => isset($row[5]) ? $row[5] : 0,
+                    'auto_coupler' => isset($row[6]) ? $row[6] : '',
+                    'install_kit' => isset($row[7]) ? $row[7] : 0,
+                    'discontinued' => isset($row[8]) ? strtolower($row[8]) : ''
                 ));
             } else {
                 $wpdb->update(
-                    $wpdb->prefix.'wdm_compatibility',
-                    array('model_id' => $c_model,
-                                    'frd_id' => $frd_product,
-                                    'breaker_performance' => isset($row[5]) ? $row[5] : 0,
-                                    'auto_coupler' => isset($row[6]) ? $row[6] : 0,
-                                    'install_kit' => isset($row[7]) ? $row[7] : 0,
-                                    'discontinued' => isset($row[8]) ? strtolower($row[8]) : ''),
+                    $wpdb->prefix . 'wdm_compatibility',
+                    array(
+                        'model_id' => $c_model,
+                        'frd_id' => $frd_product,
+                        'breaker_performance' => isset($row[5]) ? $row[5] : 0,
+                        'auto_coupler' => isset($row[6]) ? $row[6] : 0,
+                        'install_kit' => isset($row[7]) ? $row[7] : 0,
+                        'discontinued' => isset($row[8]) ? strtolower($row[8]) : ''
+                    ),
                     array('id' => $exists),
-                    array('%d',
-                                    '%d',
-                                    '%s',
-                                    '%s',
-                                    '%s',
-                                    '%s'),
+                    array(
+                        '%d',
+                        '%d',
+                        '%s',
+                        '%s',
+                        '%s',
+                        '%s'
+                    ),
                     array('%d')
                 );
             }
@@ -290,15 +297,15 @@ function wdmImportData()
 function wdmGetCategoryID($name, $type)
 {
     global $wpdb;
-    $category_id=0;
+    $category_id = 0;
     if (!empty($type)) {
-        $category_id=$wpdb->get_var('SELECT id from '.$wpdb->prefix.'wdm_categories WHERE name like "'.$name.'" AND type like "'.$type.'"');
+        $category_id = $wpdb->get_var('SELECT id from ' . $wpdb->prefix . 'wdm_categories WHERE name like "' . $name . '" AND type like "' . $type . '"');
         if (!$category_id) {
-            $wpdb->insert($wpdb->prefix.'wdm_categories', array(
+            $wpdb->insert($wpdb->prefix . 'wdm_categories', array(
                 'name' => $name,
                 'type' => $type
             ));
-            $category_id=$wpdb->insert_id;
+            $category_id = $wpdb->insert_id;
         }
     }
     return $category_id;
@@ -307,18 +314,18 @@ function wdmGetCategoryID($name, $type)
 function wdmGetPostID($name, $order, $type, $category_id, $manufacturer = 0)
 {
     global $wpdb;
-    $post_id=0;
+    $post_id = 0;
     if (!empty($name)) {
-        $post_id=$wpdb->get_var('SELECT id from '.$wpdb->prefix.'wdm_posts WHERE name like "'.$name.'" AND type like "'.$type.'" AND manufacturer='.$manufacturer.' AND category='.$category_id);
+        $post_id = $wpdb->get_var('SELECT id from ' . $wpdb->prefix . 'wdm_posts WHERE name like "' . $name . '" AND type like "' . $type . '" AND manufacturer=' . $manufacturer . ' AND category=' . $category_id);
         if (!$post_id) {
-            $wpdb->insert($wpdb->prefix.'wdm_posts', array(
+            $wpdb->insert($wpdb->prefix . 'wdm_posts', array(
                 'name' => $name,
                 'type' => $type,
                 'manufacturer' => $manufacturer,
                 'category' => $category_id,
                 'sort_order' => $order
             ));
-            $post_id=$wpdb->insert_id;
+            $post_id = $wpdb->insert_id;
         }
     }
     return $post_id;
@@ -330,37 +337,37 @@ function wdmFilter($atts)
 {
     ob_start();
     global $wpdb;
-    $is_breaker=0;
+    $is_breaker = 0;
     if (isset($atts['title'])) {
-        echo "<div class='wdm_title'><h2>CARRIER COMPATIBILITY GUIDE for ".strtoupper($atts['title'])."</h2></div>";
+        echo "<div class='wdm_title'><h2>CARRIER COMPATIBILITY GUIDE for " . strtoupper($atts['title']) . "</h2></div>";
         if (strpos($atts['title'], 'Breakers') !== false) {
-            $is_breaker=1;
+            $is_breaker = 1;
         }
     } elseif (isset($atts['product_series'])) {
-        echo "<div class='wdm_title'><h2>CARRIER COMPATIBILITY GUIDE for ".strtoupper($atts['product_series'])."</h2></div>";
+        echo "<div class='wdm_title'><h2>CARRIER COMPATIBILITY GUIDE for " . strtoupper($atts['product_series']) . "</h2></div>";
     } elseif (isset($atts['product'])) {
-        $is_breaker=1;
-        echo "<div class='wdm_title'><h2>CARRIER COMPATIBILITY GUIDE for ".$atts['product']."</h2></div>";
+        $is_breaker = 1;
+        echo "<div class='wdm_title'><h2>CARRIER COMPATIBILITY GUIDE for " . $atts['product'] . "</h2></div>";
     } else {
         echo "<div class='wdm_title'><h2>CARRIER COMPATIBILITY GUIDE</h2></div>";
     }
-    echo "<input type='hidden' class='is_breaker' value='".$is_breaker."'>";
+    echo "<input type='hidden' class='is_breaker' value='" . $is_breaker . "'>";
     if (isset($atts['product_series'])) {
-        ?>
+    ?>
         <input type="hidden" class="product_series" value="<?php echo $atts['product_series'];
-        ?>">
+                                                            ?>">
         <input type="hidden" class="product" value='<?php echo $atts['product'];
-        ?>'>
+                                                    ?>'>
         <?php
-        $frd_products=$wpdb->get_results('SELECT post.name
-                                        FROM '.$wpdb->prefix.'wdm_categories AS cat
-                                        JOIN '.$wpdb->prefix.'wdm_posts AS post ON cat.id=post.category
+        $frd_products = $wpdb->get_results('SELECT post.name
+                                        FROM ' . $wpdb->prefix . 'wdm_categories AS cat
+                                        JOIN ' . $wpdb->prefix . 'wdm_posts AS post ON cat.id=post.category
                                         WHERE cat.type like "frd" AND post.type like "frd_product"
-                                        AND cat.name like "'.$atts['product_series'].'"
+                                        AND cat.name like "' . $atts['product_series'] . '"
                                         ORDER BY post.sort_order ASC');
         echo '<div class="wdm_carrier_model wdm_section">';
         $model_name_sections = $atts['model_name_sections'];
-        if ($atts['product_series']!='TEFRA Auto Coupler') {
+        if ($atts['product_series'] != 'TEFRA Auto Coupler') {
             echo "<div class='wdm_title'><h3>Select FRD Model</h3></div>";
             echo "<div class='wdm_models_list'>";
             //$model_name_sections = $atts['model_name_sections'];
@@ -370,26 +377,26 @@ function wdmFilter($atts)
                 foreach ($model_name_sections as $model_names) {
                     //preg_match('/([\w\s]+)({([\w,]+)})/', $model_names, $models);
                     preg_match('/([\w\s\-\:]*)({([\w\s,]*)})/', $model_names, $models);
-                    echo "<div class='wdm_model_section'>".$models[1]."</div>";
+                    echo "<div class='wdm_model_section'>" . $models[1] . "</div>";
                     $model_vals = explode(',', $models[3]);
                     foreach ($frd_products as $frd_product) {
                         if (in_array($frd_product->name, $model_vals)) {
-                            echo "<div class='wdm_model'>".$frd_product->name."</div>";
+                            echo "<div class='wdm_model'>" . $frd_product->name . "</div>";
                         }
                     }
                 }
             } else {
                 foreach ($frd_products as $key) {
-                    echo "<div class='wdm_model'>".$key->name."</div>";
+                    echo "<div class='wdm_model'>" . $key->name . "</div>";
                 }
             }
             echo "</div>";
         } else {
             echo "<div class='wdm_title'><h3>Select TEFRA Model Size</h3></div>";
             echo "<div class='wdm_models_list'>";
-            $arr=array();
+            $arr = array();
             foreach ($frd_products as $key) {
-                $size=explode('-', $key->name);
+                $size = explode('-', $key->name);
                 if (!in_array($size[0], $arr)) {
                     array_push($arr, $size[0]);
                 }
@@ -399,17 +406,17 @@ function wdmFilter($atts)
                 $sections = array();
                 foreach ($model_name_sections as $model_names) {
                     preg_match('/([\w\s\-\:]*)({([\w\s,]*)})/', $model_names, $models);
-                    echo "<div class='wdm_model_section'>".$models[1]."</div>";
+                    echo "<div class='wdm_model_section'>" . $models[1] . "</div>";
                     $model_vals = explode(',', $models[3]);
                     foreach ($arr as $frd_product) {
                         if (in_array($frd_product, $model_vals)) {
-                            echo "<div class='wdm_model'>".$frd_product."</div>";
+                            echo "<div class='wdm_model'>" . $frd_product . "</div>";
                         }
                     }
                 }
             } else {
                 foreach ($arr as $tac_model) {
-                    echo "<div class='wdm_model'>".$tac_model."</div>";
+                    echo "<div class='wdm_model'>" . $tac_model . "</div>";
                 }
             }
             echo "</div>";
@@ -419,31 +426,33 @@ function wdmFilter($atts)
     } elseif (isset($atts['product'])) {
         ?>
         <input type="hidden" class="product" value='<?php echo $atts['product'];
-        ?>'>
+                                                    ?>'>
         <?php
-        $products='';
-        $string=explode(',', $atts['product']);
+        $products = '';
+        $string = explode(',', $atts['product']);
         foreach ($string as $value) {
-            $products.=',"'.$value.'"';
+            $products .= ',"' . $value . '"';
         }
-        if (count($string)==1) {
+        if (count($string) == 1) {
             wdmDisplayCarrierTypes(wdmGetCarriers($atts['product']), $atts['product']);
         } else {
-            ?>
+        ?>
             <div class="wdm_carrier_model wdm_section">
-                <div class='wdm_title'><h3>Select FRD Model</h3></div>
+                <div class='wdm_title'>
+                    <h3>Select FRD Model</h3>
+                </div>
                 <div class='wdm_models_list'>
                     <?php
                     foreach ($string as $value) {
-                        echo "<div class='wdm_model'>".$value."</div>";
+                        echo "<div class='wdm_model'>" . $value . "</div>";
                     }
                     ?>
                 </div>
             </div>
-            <?php
+    <?php
         }
     } else {
-        $carrier_type=$wpdb->get_results('SELECT id, name from '.$wpdb->prefix.'wdm_categories WHERE type like "carrier"');
+        $carrier_type = $wpdb->get_results('SELECT id, name from ' . $wpdb->prefix . 'wdm_categories WHERE type like "carrier"');
         wdmDisplayCarrierTypes($carrier_type, '');
         $all_compatibility_class = 'all_compatibility';
     }
@@ -455,8 +464,8 @@ function wdmFilter($atts)
     </div>
     <input type="hidden" name="carrier_man" class="carrier_man" data-name="" value="0">
     <div class="wdm_compatibility_section wdm_section <?php echo $all_compatibility_class; ?>"></div>
-    <?php
-    $content=ob_get_contents();
+<?php
+    $content = ob_get_contents();
     ob_end_clean();
     return $content;
 }
@@ -464,77 +473,80 @@ function wdmFilter($atts)
 function wdmGetCarriers($products)
 {
     global $wpdb;
-    $products=($_POST['product_series']=='TEFRA Auto Coupler') ? 'like "'.$products.'%"' : 'like "'.$products.'"';
+    $products = ($_POST['product_series'] == 'TEFRA Auto Coupler') ? 'like "' . $products . '%"' : 'like "' . $products . '"';
     return $wpdb->get_results('SELECT DISTINCT (
                     cat.id
                     ), cat.name
-                    FROM '.$wpdb->prefix.'wdm_categories AS cat
-                    JOIN '.$wpdb->prefix.'wdm_posts AS post ON cat.id = post.category
-                    JOIN '.$wpdb->prefix.'wdm_compatibility AS comp ON comp.model_id= post.id
+                    FROM ' . $wpdb->prefix . 'wdm_categories AS cat
+                    JOIN ' . $wpdb->prefix . 'wdm_posts AS post ON cat.id = post.category
+                    JOIN ' . $wpdb->prefix . 'wdm_compatibility AS comp ON comp.model_id= post.id
                     WHERE post.type LIKE "c_model"
-                    AND comp.frd_id IN ( SELECT id from '.$wpdb->prefix.'wdm_posts
-                    WHERE name '.$products.'
+                    AND comp.frd_id IN ( SELECT id from ' . $wpdb->prefix . 'wdm_posts
+                    WHERE name ' . $products . '
                     AND type like "frd_product")');
 }
 
 function wdmDisplayCarrierTypes($carrier_type, $product = '')
 {
-    $ext='';
+    $ext = '';
     if (strpos($product, 'MT') !== false) {
-        $ext='-MT';
+        $ext = '-MT';
     } elseif (strpos($product, 'CW') !== false) {
-        $ext='-WC';
+        $ext = '-WC';
     } elseif (strpos($product, 'HP') !== false) {
-        $ext='-HP';
+        $ext = '-HP';
     } elseif (strpos($product, 'TAC') !== false) {
-        $ext='-TAC';
+        $ext = '-TAC';
     } elseif ($product == '') {
-        $ext='';
+        $ext = '';
     } else {
-        $ext='-breaker';
+        $ext = '-breaker';
     }
-    ?>
+?>
     <div class="wdm_carrier_type wdm_section">
-        <div class="wdm_title"><h3>Select Carrier Type</h3></div>
+        <div class="wdm_title">
+            <h3>Select Carrier Type</h3>
+        </div>
         <div class="wdm_types">
             <?php
             if (!empty($carrier_type)) {
-                $arr=array();
+                $arr = array();
                 foreach ($carrier_type as $key) {
-                    if ($key->name=='Compact Utility Loader') {
-                        $arr[0]=array($key->id,$key->name);
-                    } elseif ($key->name=='Skid Steer') {
-                        $arr[1]=array($key->id,$key->name);
-                    } elseif ($key->name=='Mini Excavator') {
-                        $arr[2]=array($key->id,$key->name);
-                    } elseif ($key->name=='Backhoe') {
-                        $arr[3]=array($key->id,$key->name);
-                    } elseif ($key->name=='Wheeled Excavator') {
-                        $arr[4]=array($key->id,$key->name);
-                    } elseif ($key->name=='Excavator') {
-                        $arr[5]=array($key->id,$key->name);
+                    if ($key->name == 'Compact Utility Loader') {
+                        $arr[0] = array($key->id, $key->name);
+                    } elseif ($key->name == 'Skid Steer') {
+                        $arr[1] = array($key->id, $key->name);
+                    } elseif ($key->name == 'Mini Excavator') {
+                        $arr[2] = array($key->id, $key->name);
+                    } elseif ($key->name == 'Backhoe') {
+                        $arr[3] = array($key->id, $key->name);
+                    } elseif ($key->name == 'Wheeled Excavator') {
+                        $arr[4] = array($key->id, $key->name);
+                    } elseif ($key->name == 'Excavator') {
+                        $arr[5] = array($key->id, $key->name);
                     }
                 }
                 /*$width=(100/count($arr))-1;*/
                 ksort($arr);
                 foreach ($arr as $key) {
-                    echo '<div class="wdm_ct_tile" data-id="'.$key[0].'"><div class="ct_img"><img src="'.plugins_url('frd-compatibility-tables/images/'.strtolower(str_replace(' ', '', $key[1])).$ext.'.png').'"></div><div class="ct_name">'.$key[1].'</div></div>';
+                    echo '<div class="wdm_ct_tile" data-id="' . $key[0] . '"><div class="ct_img"><img src="' . plugins_url('frd-compatibility-tables/images/' . strtolower(str_replace(' ', '', $key[1])) . $ext . '.png') . '"></div><div class="ct_name">' . $key[1] . '</div></div>';
                 }
             } else {
                 if (isset($atts['product_series'])) {
-                    echo "<div>Carrier Types with product series ".$atts['product_series']."&nbsp;does not exists</div>";
+                    echo "<div>Carrier Types with product series " . $atts['product_series'] . "&nbsp;does not exists</div>";
                 } elseif (isset($atts['product'])) {
-                    echo "<div>Carrier Types with product/s ".$atts['product']." does not exists</div>";
+                    echo "<div>Carrier Types with product/s " . $atts['product'] . " does not exists</div>";
                 } else {
                     echo "<div>Carier Type does not exists</div>";
                 }
             }
             ?>
             <div class="wdm_next">></div>
-            <div class="wdm_previous"><</div>
-        </div>
-        <div class="carrier_scroll_help">Scroll horizontally for additional carrier options</div>
+            <div class="wdm_previous">
+                << /div>
             </div>
+            <div class="carrier_scroll_help">Scroll horizontally for additional carrier options</div>
+        </div>
     <?php
 }
 
@@ -552,41 +564,41 @@ function wdmGetManufacturer()
 {
     global $wpdb;
     if ($_POST['product']) {
-        $products=($_POST['product_series']=='TEFRA Auto Coupler') ? 'like "'.$_POST['product'].'%"' : 'like "'.$_POST['product'].'"';
+        $products = ($_POST['product_series'] == 'TEFRA Auto Coupler') ? 'like "' . $_POST['product'] . '%"' : 'like "' . $_POST['product'] . '"';
         $manufacturer = $wpdb->get_results('SELECT DISTINCT (cat.id), cat.name
-                    FROM '.$wpdb->prefix.'wdm_categories AS cat
-                    JOIN '.$wpdb->prefix.'wdm_posts AS post ON cat.id = post.manufacturer
-                    JOIN '.$wpdb->prefix.'wdm_compatibility AS comp ON comp.model_id= post.id
+                    FROM ' . $wpdb->prefix . 'wdm_categories AS cat
+                    JOIN ' . $wpdb->prefix . 'wdm_posts AS post ON cat.id = post.manufacturer
+                    JOIN ' . $wpdb->prefix . 'wdm_compatibility AS comp ON comp.model_id= post.id
                     WHERE post.type LIKE  "c_model"
-                    AND comp.frd_id IN ( SELECT p.id from '.$wpdb->prefix.'wdm_posts As p
-                    WHERE p.name '.$products.'
+                    AND comp.frd_id IN ( SELECT p.id from ' . $wpdb->prefix . 'wdm_posts As p
+                    WHERE p.name ' . $products . '
                     AND type like "frd_product" )
-                    AND post.category='.$_POST['c_type'].
-                    ' ORDER BY cat.name');
+                    AND post.category=' . $_POST['c_type'] .
+            ' ORDER BY cat.name');
     } else {
-        $manufacturer=$wpdb->get_results('SELECT DISTINCT (
+        $manufacturer = $wpdb->get_results('SELECT DISTINCT (
                         cat.id
                         ), cat.name
-                        FROM '.$wpdb->prefix.'wdm_categories AS cat
-                        JOIN '.$wpdb->prefix.'wdm_posts AS post ON cat.id = post.manufacturer
+                        FROM ' . $wpdb->prefix . 'wdm_categories AS cat
+                        JOIN ' . $wpdb->prefix . 'wdm_posts AS post ON cat.id = post.manufacturer
                         WHERE post.type LIKE  "c_model"
-                        AND post.category ='.$_POST['c_type'].
-                        ' ORDER BY cat.name');
+                        AND post.category =' . $_POST['c_type'] .
+            ' ORDER BY cat.name');
     }
 
     if (!empty($manufacturer)) {
         echo "<select name='wdm_manufacturer'><option readonly>-- Select Manufacturer --</option>";
         foreach ($manufacturer as $key) {
-            echo '<option value="'.$key->id.'">'.$key->name.'</option>';
+            echo '<option value="' . $key->id . '">' . $key->name . '</option>';
         }
         echo "</select>";
     } else {
         if (isset($_POST['product_series'])) {
-            echo "<div>Manufacturers associated with product series <b>".$_POST['product_series']."</b> and Carrier Type <b>".$_POST['c_type']."</b> does not exists</div>";
+            echo "<div>Manufacturers associated with product series <b>" . $_POST['product_series'] . "</b> and Carrier Type <b>" . $_POST['c_type'] . "</b> does not exists</div>";
         } elseif (isset($_POST['product'])) {
-            echo "<div>Manufacturers associated with product/s <b>".$_POST['product']."</b> and Carrier Type <b>".$_POST['c_type']."</b> does not exists</div>";
+            echo "<div>Manufacturers associated with product/s <b>" . $_POST['product'] . "</b> and Carrier Type <b>" . $_POST['c_type'] . "</b> does not exists</div>";
         } else {
-            echo "<div>Manufacturers associated with Carrier Type <b>".$_POST['c_type']."</b> does not exists</div>";
+            echo "<div>Manufacturers associated with Carrier Type <b>" . $_POST['c_type'] . "</b> does not exists</div>";
         }
     }
 
@@ -602,22 +614,22 @@ function wdmGetModel()
         wdmGetProductModels();
         die();
     } else {
-        $carrier_models=$wpdb->get_results('SELECT id, name from '.$wpdb->prefix.'wdm_posts WHERE type like "c_model" AND manufacturer='.$_POST['manufacturer'].' AND category ='.$_POST['c_type']);
+        $carrier_models = $wpdb->get_results('SELECT id, name from ' . $wpdb->prefix . 'wdm_posts WHERE type like "c_model" AND manufacturer=' . $_POST['manufacturer'] . ' AND category =' . $_POST['c_type']);
     }
     if (!empty($carrier_models)) {
         echo "<select name='wdm_model' class='wdm_model'>";
         echo '<option readonly>--Select Carrier Model--</option>';
         foreach ($carrier_models as $key) {
-            echo '<option value="'.$key->id.'">'.$key->name.'</option>';
+            echo '<option value="' . $key->id . '">' . $key->name . '</option>';
         }
         echo "</select>";
     } else {
         if (isset($_POST['product_series'])) {
-            echo "<div>Models associated with product series <b>".$_POST['product_series']."</b> and Carrier Type <b>".$_POST['c_type']."</b> and Manufacturere <b>".$_POST['manufacturer']."</b> does not exists</div>";
+            echo "<div>Models associated with product series <b>" . $_POST['product_series'] . "</b> and Carrier Type <b>" . $_POST['c_type'] . "</b> and Manufacturere <b>" . $_POST['manufacturer'] . "</b> does not exists</div>";
         } elseif (isset($_POST['product'])) {
-            echo "<div>Models associated with product/s <b>".$_POST['product']."</b> and Carrier Type <b>".$_POST['c_type']."</b> and Manufacturere <b>".$_POST['manufacturer']."</b> does not exists</div>";
+            echo "<div>Models associated with product/s <b>" . $_POST['product'] . "</b> and Carrier Type <b>" . $_POST['c_type'] . "</b> and Manufacturere <b>" . $_POST['manufacturer'] . "</b> does not exists</div>";
         } else {
-            echo "<div>Models associated with Carrier Type <b>".$_POST['c_type']."</b> and Manufacturere <b>".$_POST['manufacturer']."</b> does not exists</div>";
+            echo "<div>Models associated with Carrier Type <b>" . $_POST['c_type'] . "</b> and Manufacturere <b>" . $_POST['manufacturer'] . "</b> does not exists</div>";
         }
     }
     die();
@@ -626,32 +638,32 @@ function wdmGetModel()
 function wdmGetProductModels()
 {
     global $wpdb;
-    $products=($_POST['product_series']=='TEFRA Auto Coupler') ? 'like "'.$_POST['product'].'%"' : 'like "'.$_POST['product'].'"';
-    $carrier_models=$wpdb->get_results('SELECT DISTINCT (
+    $products = ($_POST['product_series'] == 'TEFRA Auto Coupler') ? 'like "' . $_POST['product'] . '%"' : 'like "' . $_POST['product'] . '"';
+    $carrier_models = $wpdb->get_results('SELECT DISTINCT (
                 post.id
                 ), post.name, frd.pname, comp.breaker_performance, comp.auto_coupler
-                FROM '.$wpdb->prefix.'wdm_categories AS cat
-                JOIN '.$wpdb->prefix.'wdm_posts AS post ON cat.id = post.manufacturer
-                JOIN '.$wpdb->prefix.'wdm_compatibility AS comp ON comp.model_id= post.id
+                FROM ' . $wpdb->prefix . 'wdm_categories AS cat
+                JOIN ' . $wpdb->prefix . 'wdm_posts AS post ON cat.id = post.manufacturer
+                JOIN ' . $wpdb->prefix . 'wdm_compatibility AS comp ON comp.model_id= post.id
                 JOIN frd_product AS frd ON comp.frd_id=frd.id
                 WHERE post.type LIKE  "c_model"
-                AND comp.frd_id IN ( SELECT p.id from '.$wpdb->prefix.'wdm_posts As p
-                WHERE p.name '.$products.'
+                AND comp.frd_id IN ( SELECT p.id from ' . $wpdb->prefix . 'wdm_posts As p
+                WHERE p.name ' . $products . '
                 AND type like "frd_product")
-                AND post.category='.$_POST['c_type'].'
-                AND post.manufacturer='.$_POST['manufacturer']);
+                AND post.category=' . $_POST['c_type'] . '
+                AND post.manufacturer=' . $_POST['manufacturer']);
     wdmDisplayComaptibilityTable($carrier_models);
 }
 
 function wdmDisplayComaptibilityTable($carrier_models)
 {
-    echo "<div class='wdm_title'>COMPATIBLE <b>".$_POST['man_txt']."&nbsp;".$_POST['c_type_txt']."</b> for <b>".$_POST['product']."</b></div>";
+    echo "<div class='wdm_title'>COMPATIBLE <b>" . $_POST['man_txt'] . "&nbsp;" . $_POST['c_type_txt'] . "</b> for <b>" . $_POST['product'] . "</b></div>";
     echo '<div class="wdm_compatibility_content">';
     echo '<div class="wdm_column">';
-    $manufacturer=strtolower(str_replace(' ', '-', $_POST['man_txt']));
-    if ($_POST['product_series']!='TEFRA Auto Coupler') {
-        $is_breaker=$_POST['is_breaker'] ? 'wdm_breaker' : '';
-        echo "<table class='".$is_breaker."'><thead><tr><th>Model No.</th>";
+    $manufacturer = strtolower(str_replace(' ', '-', $_POST['man_txt']));
+    if ($_POST['product_series'] != 'TEFRA Auto Coupler') {
+        $is_breaker = $_POST['is_breaker'] ? 'wdm_breaker' : '';
+        echo "<table class='" . $is_breaker . "'><thead><tr><th>Model No.</th>";
         if (!$_POST['product_series']) {
             if ($_POST['is_breaker']) {
                 echo "<th>Compatibility</th>";
@@ -659,12 +671,12 @@ function wdmDisplayComaptibilityTable($carrier_models)
         }
         echo "</tr></thead><tbody><tr><td colspan='2'><div class='scrollit'><table>";
         foreach ($carrier_models as $key) {
-            $class=($key->breaker_performance=='Optional*') ? 'wdm_optinal':'wdm_optimum';
+            $class = ($key->breaker_performance == 'Optional*') ? 'wdm_optinal' : 'wdm_optimum';
             //echo "<div class='wdm_model ".$class."'>".$key->breaker_performance."</div>";
-            echo "<tr><td>".$key->name."</td>";
+            echo "<tr><td>" . $key->name . "</td>";
             if (!$_POST['product_series']) {
                 if ($_POST['is_breaker']) {
-                    echo "<td class='".$class."'>".$key->breaker_performance."</td>";
+                    echo "<td class='" . $class . "'>" . $key->breaker_performance . "</td>";
                 }
             }
             echo "</tr>";
@@ -672,25 +684,25 @@ function wdmDisplayComaptibilityTable($carrier_models)
         echo "</table></div></tbody></table>";
         echo "</div><div class='wdm_column'>";
         // if(getimagesize(plugins_url('frd-compatibility-tables/images/manufacturers/'.$manufacturer.'.jpg'))!==false){
-            echo "<div class='wdm_logo'>";
-            echo "<img src='".plugins_url('frd-compatibility-tables/images/manufacturers/'.$manufacturer.'.png')."'>";
-            echo "</div>";
+        echo "<div class='wdm_logo'>";
+        echo "<img src='" . plugins_url('frd-compatibility-tables/images/manufacturers/' . $manufacturer . '.png') . "'>";
+        echo "</div>";
         // }
     } else {
         echo "<table class='wdm_tac'><thead><tr><th>Carrier Model No.</th><th>TEFRA Model NO.</th><th>Pin Pick-up Range (mm)</th>";
         echo "</tr></thead><tbody><tr><td colspan='3'><div class='scrollit'><table>";
         foreach ($carrier_models as $key) {
-            echo "<tr><td>".$key->name."</td>";
-            echo "<td>".$key->pname."</td>";
-            echo "<td>".$key->auto_coupler."</td>";
+            echo "<tr><td>" . $key->name . "</td>";
+            echo "<td>" . $key->pname . "</td>";
+            echo "<td>" . $key->auto_coupler . "</td>";
             echo "</tr>";
         }
         echo "</table></div></tbody></table>";
         echo "</div><div class='wdm_column'>";
         // if(getimagesize(plugins_url('frd-compatibility-tables/images/manufacturers/'.$manufacturer.'.jpg'))!==false){
-            echo "<div class='wdm_logo'>";
-            echo "<img src='".plugins_url('frd-compatibility-tables/images/manufacturers/'.$manufacturer.'.png')."'>";
-            echo "</div>";
+        echo "<div class='wdm_logo'>";
+        echo "<img src='" . plugins_url('frd-compatibility-tables/images/manufacturers/' . $manufacturer . '.png') . "'>";
+        echo "</div>";
         // }
     }
     echo '</div>';
@@ -701,78 +713,78 @@ add_action('wp_ajax_nopriv_wdm_view_compatibility', 'wdmShowCompatibility');
 function wdmShowCompatibility()
 {
     global $wpdb;
-    $hyd_brk_comp=array();
-    $hyd_brk_opt=array();
-    $dis_brk_comp=array();
-    $dis_brk_opt=array();
-    $cmpt_drv=array();
-    $cmpt_whl=array();
-    $dis_cmpt=array();
-    $dis_mech=array();
-    $mech_thumb=array();
-    $t_a_c=array();
-    $dis_t_a_c=array();
-    $auto_coupler=array();
+    $hyd_brk_comp = array();
+    $hyd_brk_opt = array();
+    $dis_brk_comp = array();
+    $dis_brk_opt = array();
+    $cmpt_drv = array();
+    $cmpt_whl = array();
+    $dis_cmpt = array();
+    $dis_mech = array();
+    $mech_thumb = array();
+    $t_a_c = array();
+    $dis_t_a_c = array();
+    $auto_coupler = array();
     if ($_POST['product_series']) {
-        $comp_data=$wpdb->get_results('SELECT post.name AS frd_name, cat.name AS cat_name, comp.breaker_performance, comp.auto_coupler, comp.install_kit , comp.discontinued
-                                   FROM '.$wpdb->prefix.'wdm_compatibility AS comp LEFT JOIN '.$wpdb->prefix.'wdm_posts AS post ON comp.frd_id=post.id
-                                   LEFT JOIN '.$wpdb->prefix.'wdm_categories AS cat ON cat.id=post.category
-                                   WHERE comp.model_id='.$_POST['carrier_model'].' AND comp.frd_id IN ( SELECT p.id from '.$wpdb->prefix.'wdm_posts AS p 
-                                    JOIN '.$wpdb->prefix.'wdm_categories AS c ON p.category=c.id
-                                    WHERE c.name LIKE "'.$_POST['product_series'].'") ORDER BY post.sort_order ASC');
+        $comp_data = $wpdb->get_results('SELECT post.name AS frd_name, cat.name AS cat_name, comp.breaker_performance, comp.auto_coupler, comp.install_kit , comp.discontinued
+                                   FROM ' . $wpdb->prefix . 'wdm_compatibility AS comp LEFT JOIN ' . $wpdb->prefix . 'wdm_posts AS post ON comp.frd_id=post.id
+                                   LEFT JOIN ' . $wpdb->prefix . 'wdm_categories AS cat ON cat.id=post.category
+                                   WHERE comp.model_id=' . $_POST['carrier_model'] . ' AND comp.frd_id IN ( SELECT p.id from ' . $wpdb->prefix . 'wdm_posts AS p 
+                                    JOIN ' . $wpdb->prefix . 'wdm_categories AS c ON p.category=c.id
+                                    WHERE c.name LIKE "' . $_POST['product_series'] . '") ORDER BY post.sort_order ASC');
     } elseif ($_POST['product']) {
-        $products='';
-        $string=explode(',', $_POST['product']);
+        $products = '';
+        $string = explode(',', $_POST['product']);
         foreach ($string as $value) {
-            $products.=',"'.$value.'"';
+            $products .= ',"' . $value . '"';
         }
-        $products=ltrim($products, ',');
-        $comp_data=$wpdb->get_results('SELECT post.name AS frd_name, cat.name AS cat_name, comp.breaker_performance, comp.auto_coupler, comp.install_kit , comp.discontinued
-                                   FROM '.$wpdb->prefix.'wdm_compatibility AS comp LEFT JOIN '.$wpdb->prefix.'wdm_posts AS post ON comp.frd_id=post.id
-                                   LEFT JOIN '.$wpdb->prefix.'wdm_categories AS cat ON cat.id=post.category
-                                   WHERE comp.model_id='.$_POST['carrier_model'].'
-                                   AND comp.frd_id IN ( SELECT p.id from '.$wpdb->prefix.'wdm_posts As p
-                                    WHERE p.name IN ('.$products.')
+        $products = ltrim($products, ',');
+        $comp_data = $wpdb->get_results('SELECT post.name AS frd_name, cat.name AS cat_name, comp.breaker_performance, comp.auto_coupler, comp.install_kit , comp.discontinued
+                                   FROM ' . $wpdb->prefix . 'wdm_compatibility AS comp LEFT JOIN ' . $wpdb->prefix . 'wdm_posts AS post ON comp.frd_id=post.id
+                                   LEFT JOIN ' . $wpdb->prefix . 'wdm_categories AS cat ON cat.id=post.category
+                                   WHERE comp.model_id=' . $_POST['carrier_model'] . '
+                                   AND comp.frd_id IN ( SELECT p.id from ' . $wpdb->prefix . 'wdm_posts As p
+                                    WHERE p.name IN (' . $products . ')
                                     AND type like "frd_product") ORDER BY post.sort_order ASC');
     } else {
-        $comp_data=$wpdb->get_results('SELECT post.name AS frd_name, cat.name AS cat_name, comp.breaker_performance, comp.auto_coupler, comp.install_kit , comp.discontinued
-                                   FROM '.$wpdb->prefix.'wdm_compatibility AS comp LEFT JOIN '.$wpdb->prefix.'wdm_posts AS post ON comp.frd_id=post.id
-                                   LEFT JOIN '.$wpdb->prefix.'wdm_categories AS cat ON cat.id=post.category
-                                   WHERE comp.model_id='.$_POST['carrier_model'].' ORDER BY post.sort_order ASC');
+        $comp_data = $wpdb->get_results('SELECT post.name AS frd_name, cat.name AS cat_name, comp.breaker_performance, comp.auto_coupler, comp.install_kit , comp.discontinued
+                                   FROM ' . $wpdb->prefix . 'wdm_compatibility AS comp LEFT JOIN ' . $wpdb->prefix . 'wdm_posts AS post ON comp.frd_id=post.id
+                                   LEFT JOIN ' . $wpdb->prefix . 'wdm_categories AS cat ON cat.id=post.category
+                                   WHERE comp.model_id=' . $_POST['carrier_model'] . ' ORDER BY post.sort_order ASC');
     }
     foreach ($comp_data as $key) {
-        if ((strpos($key->cat_name, 'Breakers') !== false ) && $key->discontinued=='') {
-            if ($key->breaker_performance=='Optimum') {
+        if ((strpos($key->cat_name, 'Breakers') !== false) && $key->discontinued == '') {
+            if ($key->breaker_performance == 'Optimum') {
                 array_push($hyd_brk_comp, $key->frd_name);
             } else {
                 array_push($hyd_brk_opt, $key->frd_name);
             }
-        } elseif ((strpos($key->cat_name, 'Breakers') !== false ) && $key->discontinued=='discontinued') {
-            if ($key->breaker_performance=='Optimum') {
+        } elseif ((strpos($key->cat_name, 'Breakers') !== false) && $key->discontinued == 'discontinued') {
+            if ($key->breaker_performance == 'Optimum') {
                 array_push($dis_brk_comp, $key->frd_name);
             } else {
                 array_push($dis_brk_opt, $key->frd_name);
             }
-        } elseif ($key->cat_name=='Mechanical Thumb') {
-            if ($key->discontinued=='') {
+        } elseif ($key->cat_name == 'Mechanical Thumb') {
+            if ($key->discontinued == '') {
                 array_push($mech_thumb, $key->frd_name);
             } else {
                 array_push($dis_mech, $key->frd_name);
             }
-        } elseif ($key->cat_name=='Compactor Wheels') {
-            if ($key->discontinued=='') {
+        } elseif ($key->cat_name == 'Compactor Wheels') {
+            if ($key->discontinued == '') {
                 array_push($cmpt_whl, $key->frd_name);
             } else {
                 array_push($dis_cmpt, $key->frd_name);
             }
-        } elseif ($key->cat_name=='Compactor Drivers') {
-            if ($key->discontinued=='') {
+        } elseif ($key->cat_name == 'Compactor Drivers') {
+            if ($key->discontinued == '') {
                 array_push($cmpt_drv, $key->frd_name);
             } else {
                 array_push($dis_cmpt, $key->frd_name);
             }
-        } elseif ($key->cat_name=='TEFRA Auto Coupler') {
-            if ($key->discontinued=='') {
+        } elseif ($key->cat_name == 'TEFRA Auto Coupler') {
+            if ($key->discontinued == '') {
                 array_push($t_a_c, $key->frd_name);
             } else {
                 array_push($dis_t_a_c, $key->frd_name);
@@ -803,23 +815,24 @@ function wdmDisplayModelList($arr, $is_optional = '')
 {
     if (!empty($arr)) {
         foreach ($arr as $value) {
-            echo '<div class="wdm_model_name '.$is_optional.'">'.$value.'</div>';
+            echo '<div class="wdm_model_name ' . $is_optional . '">' . $value . '</div>';
         }
     }
 }
 
 function wdmFrontDisplay($hyd_brk_opt, $hyd_brk_comp, $dis_brk_opt, $dis_brk_comp, $cmpt_drv, $cmpt_whl, $dis_cmpt, $mech_thumb, $dis_mech, $t_a_c, $dis_t_a_c, $auto_coupler)
 {
-    $invalid_col_class="";
-    $invalid_col_head_class="";
-    if ($_POST['product_series'] == 0 &&
+    $invalid_col_class = "";
+    $invalid_col_head_class = "";
+    if (
+        $_POST['product_series'] == 0 &&
         $_POST['product'] == 0 &&
-        ($_POST['c_type_txt']=='Compact Utility Loader' || $_POST['c_type_txt']=='Skid Steer')
+        ($_POST['c_type_txt'] == 'Compact Utility Loader' || $_POST['c_type_txt'] == 'Skid Steer')
     ) {
         $invalid_col_class = "invalid_col";
-        $invalid_col_head_class="invalid_col_head";
+        $invalid_col_head_class = "invalid_col_head";
     }
-    echo "<div class='wdm_title'>COMPATIBILITY DETAILS for <b>".$_POST['man_txt']."&nbsp;".$_POST['model_txt']."&nbsp;".$_POST['c_type_txt']."</b></div>";
+    echo "<div class='wdm_title'>COMPATIBILITY DETAILS for <b>" . $_POST['man_txt'] . "&nbsp;" . $_POST['model_txt'] . "&nbsp;" . $_POST['c_type_txt'] . "</b></div>";
     echo "<div class='wdm_comp_col'><h5 class='comp_title'>HYDRAULIC<br/>BREAKERS</h5>";
     if (!empty($hyd_brk_comp)) {
         echo "<h7 class='current_series'>Current Series</h7><h6 class='sub_title_comp'>Optimum Compatibility</h6>";
@@ -832,7 +845,7 @@ function wdmFrontDisplay($hyd_brk_opt, $hyd_brk_comp, $dis_brk_opt, $dis_brk_com
         wdmDisplayModelList($hyd_brk_opt, 'wdm_optional_model');
     }
     if (!empty($dis_brk_opt) || !empty($dis_brk_comp)) {
-        echo "<h7 class='previous_series'>Previous Models:</h7>";
+        echo "<h6 class='previous_series'>Previous Models:</h7>";
         if (!empty($dis_brk_comp)) {
             echo '<h6 class="sub_title_comp">Optimum Compatibility</h6>';
             sort($dis_brk_comp);
@@ -847,11 +860,11 @@ function wdmFrontDisplay($hyd_brk_opt, $hyd_brk_comp, $dis_brk_opt, $dis_brk_com
     echo "</div>";
     echo "<div class='wdm_comp_col $invalid_col_class'><h5 class='comp_title $invalid_col_head_class'>COMPACTION<br/>ATTACHMENTS</h5>";
     if (!empty($cmpt_drv)) {
-        echo '<h6 class="compaction_sub">Vibratory Plate</h6>';
+        echo '<h6 class="compaction_sub", id="compaction_sub">Vibratory Plate</h6>';
         wdmDisplayModelList($cmpt_drv);
     }
     if (!empty($cmpt_whl)) {
-        echo "<h6 class='compaction_sub'>Static Wheel</h6>";
+        echo "<h6 class='compaction_sub' id='compaction_sub'>Static Wheel</h6>";
         wdmDisplayModelList($cmpt_whl);
     }
     if (!empty($dis_cmpt)) {
@@ -894,30 +907,34 @@ function wdmDeleteDBData()
     global $wpdb;
     $wpdb->query(
         $wpdb->prepare(
-            "DELETE FROM `".$wpdb->prefix."wdm_categories` where 1", array()
+            "DELETE FROM `" . $wpdb->prefix . "wdm_categories` where 1",
+            array()
         )
     );
     $wpdb->query(
         $wpdb->prepare(
-            "DELETE FROM `".$wpdb->prefix."wdm_compatibility` where 1", array()
+            "DELETE FROM `" . $wpdb->prefix . "wdm_compatibility` where 1",
+            array()
         )
     );
     $wpdb->query(
         $wpdb->prepare(
-            "DELETE FROM `".$wpdb->prefix."wdm_posts` where 1", array()
+            "DELETE FROM `" . $wpdb->prefix . "wdm_posts` where 1",
+            array()
         )
     );
 }
-add_action('admin_init', 'wdmCachedPagesOption');  
-function wdmCachedPagesOption() {
-    register_setting('general','wdm_cached_page');
+add_action('admin_init', 'wdmCachedPagesOption');
+function wdmCachedPagesOption()
+{
+    register_setting('general', 'wdm_cached_page');
     add_settings_section(
         'wdm_cached_pages_section',
         'FRD Compatibility',
         'addPagesToCachedSection',
         'general'
     );
-	add_settings_field( // Option 1
+    add_settings_field( // Option 1
         'wdm_cached_page', // Option ID
         'Clear cache on data upload', // Label
         'addPagesToCached', // !important - This is where the args go!
@@ -926,38 +943,41 @@ function wdmCachedPagesOption() {
         array('label_for' => 'wdm_cached_page')
     );
 }
-function addPagesToCachedSection () {
+function addPagesToCachedSection()
+{
     return false;
-	//echo "Add Pages to Cached";
+    //echo "Add Pages to Cached";
 }
 function addPagesToCached($args)
 {
-	$pages = get_pages();
-	$option = get_option('wdm_cached_page');
-	?>
-		<select class = "wdm_cached_page" name = "wdm_cached_page[]" multiple="multiple">
-		<?php foreach($pages as $page) { ?>
-		<option value = "<?php echo $page->ID; ?>" <?= (is_array($option) && in_array($page->ID, $option)) ? 'selected' : '' ?>><?php echo $page->post_title; ?></option>
-		<?php } ?>
-		</select>
-	<?php
+    $pages = get_pages();
+    $option = get_option('wdm_cached_page');
+    ?>
+        <select class="wdm_cached_page" name="wdm_cached_page[]" multiple="multiple">
+            <?php foreach ($pages as $page) { ?>
+                <option value="<?php echo $page->ID; ?>" <?= (is_array($option) && in_array($page->ID, $option)) ? 'selected' : '' ?>><?php echo $page->post_title; ?></option>
+            <?php } ?>
+        </select>
+    <?php
 }
 add_action('wp_ajax_wdm_clear_cache', 'clearPageCache');
 
-function clearPageCache(){
-   $all_pages = get_option('wdm_cached_pages');
-   if(!empty($all_pages)){
-       foreach ($all_pages as $page_id) {
+function clearPageCache()
+{
+    $all_pages = get_option('wdm_cached_pages');
+    if (!empty($all_pages)) {
+        foreach ($all_pages as $page_id) {
             wdmPurgePage($page_id);
         }
     }
 }
 
-function wdmPurgePage($post_id) {
+function wdmPurgePage($post_id)
+{
 
-   if ( class_exists('Ninukis_Plugin') && Ninukis_Plugin::isCachingEnabled() ) {
-   return NinukisCaching::get_instance()->purge_page_cache( $post_id );
-   } else {
-   return TRUE;
-   }
+    if (class_exists('Ninukis_Plugin') && Ninukis_Plugin::isCachingEnabled()) {
+        return NinukisCaching::get_instance()->purge_page_cache($post_id);
+    } else {
+        return TRUE;
+    }
 }
